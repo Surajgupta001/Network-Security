@@ -50,7 +50,6 @@ env/
 
 # Data Files
 Network_Security.egg-info/
-.github/
 *.csv
 *.parquet
 *.xlsx
