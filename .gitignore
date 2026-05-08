@@ -49,7 +49,7 @@ env/
 .env.*.local
 
 # Data Files
-Network_Data/
+Network_Security.egg-info/
 *.csv
 *.parquet
 *.xlsx
