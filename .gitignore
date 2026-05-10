@@ -57,6 +57,7 @@ Network_Security.egg-info/
 *.json
 *.pickle
 *.pkl
+Artifacts/
 
 # Logs
 *.log
