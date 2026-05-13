@@ -2,7 +2,7 @@ import os
 import sys
 import pandas as pd
 
-from networksecurity import logging
+from networksecurity.logging.logger import logging
 from networksecurity.constants.training_pipeline import SCHEMA_FILE_PATH
 from networksecurity.entity.artifact_entity import (
     DataIngestionArtifact,
@@ -21,6 +21,7 @@ class DataValidation:
         data_validation_config: DataValidationConfig,
     ):
         try:
+            logging.info("Initializing data validation stage")
             self.data_ingestion_artifact = data_ingestion_artifact
             self.data_validation_config = data_validation_config
             self._schema_config = read_yaml_file(SCHEMA_FILE_PATH)
@@ -50,6 +51,7 @@ class DataValidation:
 
     def detect_dataset_drift(self, base_df, current_df, threshold=0.05) -> bool:
         try:
+            logging.info("Starting dataset drift detection")
             status = True
             report = {}
             for column in base_df.columns:
@@ -79,12 +81,14 @@ class DataValidation:
             write_yaml_file(
                 file_path=drift_report_file_path, content=report, replace=True
             )
+            logging.info(f"Drift report written to {drift_report_file_path}")
             return status
         except Exception as e:
             raise NetworkSecurityException(e, sys)
 
     def initialize_data_validation(self) -> DataValidationArtifact:
         try:
+            logging.info("Starting data validation stage")
             train_file_path = self.data_ingestion_artifact.trained_file_path
             test_file_path = self.data_ingestion_artifact.test_file_path
 
@@ -135,6 +139,7 @@ class DataValidation:
                 invalid_test_file_path=self.data_validation_config.invalid_test_file_path,
                 drift_report_file_path=self.data_validation_config.drift_report_file_path,
             )
+            logging.info(f"Data validation artifact: {data_validation_artifact}")
 
             return data_validation_artifact
         except Exception as e:

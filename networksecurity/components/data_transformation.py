@@ -38,6 +38,7 @@ class DataTransformation:
     @staticmethod
     def read_data(file_path: str) -> pd.DataFrame:
         try:
+            logging.info(f"Reading data from: {file_path}")
             return pd.read_csv(file_path)
         except Exception as e:
             raise NetworkSecurityException(e, sys)
@@ -54,7 +55,7 @@ class DataTransformation:
             Pipeline: A Pipeline object with the KNNImputer as the only step.
         """
         logging.info(
-            "Entered get_ data_transformer_object method of DataTransformation class"
+            "Entered get_data_transformer_object method of DataTransformation class"
         )
         try:
             imputer: KNNImputer = KNNImputer(**DATA_TRANSFORMATION_IMPUTER_PARAMS)
@@ -99,6 +100,7 @@ class DataTransformation:
             transformed_input_test_feature = preprocessor.transform(
                 input_feature_test_df
             )
+            logging.info("Completed fitting and transforming data")
 
             train_arr = np.c_[
                 transformed_input_train_feature, np.array(target_feature_train_df)
@@ -120,6 +122,7 @@ class DataTransformation:
                 self.data_transformation_config.transformed_object_file_path,
                 preprocessor_object,
             )
+            logging.info("Saved transformed train/test arrays and preprocessing object")
 
             # Prepareing artifact
             data_transformation_artifact = DataTransformationArtifact(

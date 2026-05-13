@@ -2,9 +2,7 @@ import os
 from datetime import datetime
 
 from networksecurity.constants import training_pipeline
-
-print(training_pipeline.PIPELINE_NAME)
-print(training_pipeline.ARTIFACT_DIR)
+from networksecurity.logging.logger import logging
 
 
 class TrainingPipelineConfig:
@@ -14,6 +12,9 @@ class TrainingPipelineConfig:
         self.artifact_name = training_pipeline.ARTIFACT_DIR
         self.artifact_dir = os.path.join(self.artifact_name, timestamp)
         self.timestamp: str = timestamp
+        logging.info(
+            f"Training pipeline config initialized with pipeline_name={self.pipeline_name}, artifact_dir={self.artifact_dir}"
+        )
 
 
 class DataIngestionConfig:
@@ -42,6 +43,7 @@ class DataIngestionConfig:
         )
         self.collection_name: str = training_pipeline.DATA_INGESTION_COLLECTION_NAME
         self.database_name: str = training_pipeline.DATA_INGESTION_DATABASE_NAME
+        logging.info(f"Data ingestion config initialized at {self.data_ingestion_dir}")
 
 
 class DataValidationConfig:
@@ -76,6 +78,9 @@ class DataValidationConfig:
             training_pipeline.DATA_VALIDATION_DRIFT_REPORT_DIR,
             training_pipeline.DATA_VALIDATION_DRIFT_REPORT_DIR_NAME,
         )
+        logging.info(
+            f"Data validation config initialized at {self.data_validation_dir}"
+        )
 
 
 class DataTransformationConfig:
@@ -87,15 +92,36 @@ class DataTransformationConfig:
         self.transformed_train_file_path: str = os.path.join(
             self.data_transformation_dir,
             training_pipeline.DATA_TRANSFORMATION_TRANSFORMED_DIR,
-            training_pipeline.TRAIN_FILE_NAME.replace("csv", "npy"),
+            training_pipeline.DATA_TRANSFORMATION_TRAIN_FILE_PATH,
         )
         self.transformed_test_file_path: str = os.path.join(
             self.data_transformation_dir,
             training_pipeline.DATA_TRANSFORMATION_TRANSFORMED_DIR,
-            training_pipeline.TEST_FILE_NAME.replace("csv", "npy"),
+            training_pipeline.DATA_TRANSFORMATION_TEST_FILE_PATH,
         )
         self.transformed_object_file_path: str = os.path.join(
             self.data_transformation_dir,
             training_pipeline.DATA_TRANSFORMATION_TRANSFORMED_DIR,
             training_pipeline.PREPROCESSING_OBJECT_FILE_NAME,
         )
+        logging.info(
+            f"Data transformation config initialized at {self.data_transformation_dir}"
+        )
+
+
+class ModelTrainerConfig:
+    def __init__(self, training_pipeline_config: TrainingPipelineConfig):
+        self.model_trainer_dir: str = os.path.join(
+            training_pipeline_config.artifact_dir,
+            training_pipeline.MODEL_TRAINER_DIR_NAME,
+        )
+        self.trained_model_file_path: str = os.path.join(
+            self.model_trainer_dir,
+            training_pipeline.MODEL_TRAINER_TRAINED_MODEL_DIR,
+            training_pipeline.MODEL_TRAINER_MODEL_FILE_NAME,
+        )
+        self.expected_accuracy: float = training_pipeline.MODEL_TRAINER_EXPECTED_SCORE
+        self.overfitting_underfitting_threshold: float = (
+            training_pipeline.MODEL_TRAINER_OVER_FIITING_UNDER_FITTING_THRESHOLD
+        )
+        logging.info(f"Model trainer config initialized at {self.model_trainer_dir}")
