@@ -50,13 +50,6 @@ env/
 
 # Data Files
 Network_Security.egg-info/
-*.csv
-*.parquet
-*.xlsx
-*.xls
-*.json
-*.pickle
-*.pkl
 Artifacts/
 
 # Logs
