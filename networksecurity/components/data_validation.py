@@ -55,8 +55,10 @@ class DataValidation:
             for column in base_df.columns:
                 d1 = base_df[column]
                 d2 = current_df[column]
-                is_same_dist = ks_2samp(d1, d2)
-                if threshold <= is_same_dist.pvalue:
+                result = ks_2samp(d1, d2)
+                # ks_2samp returns (statistic, pvalue) - access via index for compatibility
+                pvalue: float = float(result[1])  # type: ignore
+                if threshold <= pvalue:
                     is_found = False
                 else:
                     is_found = True
@@ -64,7 +66,7 @@ class DataValidation:
                 report.update(
                     {
                         column: {
-                            "p_value": float(is_same_dist.pvalue),
+                            "p_value": pvalue,
                             "drift_status": is_found,
                         }
                     }
