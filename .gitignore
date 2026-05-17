@@ -51,6 +51,7 @@ env/
 # Data Files
 Network_Security.egg-info/
 Artifacts/
+mlruns/
 
 # Logs
 *.log

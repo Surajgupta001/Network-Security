@@ -1,6 +1,7 @@
 import os
 import sys
 
+import mlflow.sklearn as mlflow_sklearn
 from sklearn.linear_model import LogisticRegression
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import (
@@ -26,6 +27,7 @@ from networksecurity.utils.ml_utils.metric.classification_metric import (
     get_classification_score,
 )
 from networksecurity.utils.ml_utils.model.estimated import NetworkModel
+import mlflow
 
 
 class ModelTrainer:
@@ -39,6 +41,18 @@ class ModelTrainer:
             self.data_transformation_artifact = data_transformation_artifact
         except Exception as e:
             raise NetworkSecurityException(e, sys) from e
+
+    def track_mlflow(self, best_model, classificationmetric):
+        with mlflow.start_run():
+            f1_Score = classificationmetric.f1_score
+            precision_score = classificationmetric.precision_score
+            recall_score = classificationmetric.recall_score
+
+            mlflow.log_metric("f1_score", f1_Score)
+            mlflow.log_metric("precision_score", precision_score)
+            mlflow.log_metric("recall_score", recall_score)
+
+            mlflow_sklearn.log_model(sk_model=best_model, name="model")
 
     def train_model(self, x_train, y_train, x_test, y_test):
         try:
@@ -104,12 +118,16 @@ class ModelTrainer:
                 y_true=y_train, y_pred=y_train_pred
             )
 
-            # TODO: Tracking the Ml-Flow metric
+            # Tracking the Ml-Flow metric for training data
+            self.track_mlflow(best_model, classification_train_metric)
 
             y_test_pred = best_model.predict(x_test)
             classification_test_metric = get_classification_score(
                 y_true=y_test, y_pred=y_test_pred
             )
+
+            # Tracking the Ml-Flow metric for testing data
+            self.track_mlflow(best_model, classification_test_metric)
 
             logging.info("Loading preprocessing object for model packaging")
             preprocessor = load_object(
