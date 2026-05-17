@@ -29,6 +29,8 @@ from networksecurity.utils.ml_utils.metric.classification_metric import (
 from networksecurity.utils.ml_utils.model.estimated import NetworkModel
 import mlflow
 
+import dagshub
+dagshub.init(repo_owner='surajgupta7070031833', repo_name='Network-Security', mlflow=True)
 
 class ModelTrainer:
     def __init__(
