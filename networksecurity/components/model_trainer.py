@@ -114,6 +114,9 @@ class ModelTrainer:
 
             best_model = models[best_model_name]
 
+            if best_model_score < self.model_trainer_config.expected_accuracy:
+                raise Exception("No best model found with score greater than threshold score")
+
             y_train_pred = best_model.predict(x_train)
 
             classification_train_metric = get_classification_score(
@@ -127,6 +130,11 @@ class ModelTrainer:
             classification_test_metric = get_classification_score(
                 y_true=y_test, y_pred=y_test_pred
             )
+
+            # Overfitting / Underfitting check
+            diff = abs(classification_train_metric.f1_score - classification_test_metric.f1_score)
+            if diff > self.model_trainer_config.overfitting_underfitting_threshold:
+                raise Exception("Model is overfitted or underfitted")
 
             # Tracking the Ml-Flow metric for testing data
             self.track_mlflow(best_model, classification_test_metric)

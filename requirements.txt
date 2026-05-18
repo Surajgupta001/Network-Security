@@ -5,10 +5,12 @@ pymongo
 pymongo[srv]==3.12
 certifi
 scikit-learn
+scipy
 dill
 pyaml
+PyYAML
 mlflow
 dagshub
 fastapi
 uvicorn
-# -e .
+-e .
