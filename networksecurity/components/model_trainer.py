@@ -133,7 +133,7 @@ class ModelTrainer:
 
             logging.info("Loading preprocessing object for model packaging")
             preprocessor = load_object(
-                self.data_transformation_artifact.transformed_object_file_path
+                file_path = self.data_transformation_artifact.transformed_object_file_path
             )
             model_dir_path = os.path.dirname(
                 self.model_trainer_config.trained_model_file_path
@@ -147,6 +147,9 @@ class ModelTrainer:
             save_object(
                 self.model_trainer_config.trained_model_file_path, obj=network_model
             )
+
+            # Model Pusher will use this model file for model packaging
+            save_object('final_model/model.pkl', best_model)
 
             # Model trainer artifact
             model_trainer_artifact = ModelTrainerArtifact(

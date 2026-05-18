@@ -124,6 +124,9 @@ class DataTransformation:
             )
             logging.info("Saved transformed train/test arrays and preprocessing object")
 
+            # Model Pusher will use this preprocessor object for model packaging
+            save_object('final_model/preprocessor.pkl', preprocessor_object)
+
             # Prepareing artifact
             data_transformation_artifact = DataTransformationArtifact(
                 transformed_object_file_path=self.data_transformation_config.transformed_object_file_path,
