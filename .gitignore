@@ -50,7 +50,7 @@ env/
 
 # Data Files
 Network_Security.egg-info/
-Artifacts/
+artifacts/
 mlruns/
 
 # Logs
